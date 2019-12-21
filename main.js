@@ -10,11 +10,35 @@ class Block {
   constructor(data, previousHash) {
     this.data = data;
     this.previousHash = previousHash;
+    this.nonce = 1
     this.hash = this.computeHash();
   }
 
   computeHash() {
-    return sha256(this.data + this.previousHash).toString();
+    return sha256(this.data + this.previousHash + this.nonce).toString();
+  }
+
+  getAnswer(difficulty) {
+    //开头前n位为0的hash
+    let answer = ''
+    for(let i=0; i< difficulty;i++){
+      answer+='0'
+    }
+    return answer
+  }
+  //计算复合区块链难度要求的hash
+  // 什么是 复合区块链难度要求的hash
+  mine(difficulty){
+    while(true){
+      this.hash=this.computeHash()
+      if(this.hash.substring(0,difficulty)!== this.getAnswer(difficulty)){
+        this.nonce++
+        this.hash=this.computeHash()
+      }else{
+        break
+      }
+    }
+    console.log('挖矿结束', this.hash)
   }
 }
 
@@ -23,6 +47,7 @@ class Block {
 class Chain {
   constructor() {
     this.chain = [this.bigBang()];
+    this.difficulty = 5;
   }
 
   bigBang() {
@@ -35,11 +60,13 @@ class Chain {
   }
   // 添加区块到区块链上
   addBlockToChain(newBlock) {
-    //data
+    // data
     // 找到最近一个block的hash
     // 这个hash就是新区块的previousHash
     newBlock.previousHash = this.getLatestBlock().hash;
-    newBlock.hash = newBlock.computeHash();
+    // newBlock.hash = newBlock.computeHash();
+    newBlock.mine(this.difficulty)
+    // 这个hash 需要满足一个区块链设置的条件
     this.chain.push(newBlock)
   }
 
@@ -75,8 +102,6 @@ class Chain {
 }
 
 const luotuoChain = new Chain();
-console.log(luotuoChain.validateChain())
-// console.log(luotuoChain);
 
 const block1 = new Block("转账十元", "");
 luotuoChain.addBlockToChain(block1);
@@ -86,6 +111,6 @@ luotuoChain.addBlockToChain(block2)
 
 //尝试篡改这个区块链
 luotuoChain.chain[1].data='转账一百个十元'
-luotuoChain.chain[1].hash = luotuoChain.chain[1].computeHash()
+luotuoChain.chain[1].mine(5)
 console.log(luotuoChain)
 console.log(luotuoChain.validateChain())
