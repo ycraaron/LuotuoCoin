@@ -6,16 +6,27 @@
 // 之前区块的哈希值
 // 自己的哈希值： 它是由存储在区块里的信息 算出来的 (data + 之前区块的哈希值)
 const sha256 = require("crypto-js/sha256");
+
+class Transaction {
+  constructor(from, to, amount) {
+    this.from = from
+    this.to = to
+    this.amount = amount
+  }
+}
+
 class Block {
-  constructor(data, previousHash) {
-    this.data = data;
+  constructor(transactions, previousHash, timestamp) {
+    this.transactions = transactions;
     this.previousHash = previousHash;
     this.nonce = 1
+    this.timestamp = timestamp
     this.hash = this.computeHash();
   }
 
   computeHash() {
-    return sha256(this.data + this.previousHash + this.nonce).toString();
+    // TODO data 变成 array of obj 需要改
+    return sha256(JSON.stringify(this.transactions) + this.previousHash + this.nonce + this.timestamp).toString();
   }
 
   getAnswer(difficulty) {
@@ -26,8 +37,8 @@ class Block {
     }
     return answer
   }
-  //计算复合区块链难度要求的hash
-  // 什么是 复合区块链难度要求的hash
+  // 计算符合区块链难度要求的hash
+  // 什么是符合区块链难度要求的hash
   mine(difficulty){
     while(true){
       this.hash=this.computeHash()
@@ -47,18 +58,46 @@ class Block {
 class Chain {
   constructor() {
     this.chain = [this.bigBang()];
-    this.difficulty = 5;
+    // transactionPool
+    // minerReward
+    this.transactionPool = []
+    this.minerRewardAmount = 50
+    this.difficulty = 4;
   }
 
   bigBang() {
-    const genesisBlock = new Block("我是祖先", "");
+    const genesisBlock = new Block([], "", Date.now());
     return genesisBlock;
   }
-
   getLatestBlock() {
     return this.chain[this.chain.length - 1];
   }
+
+  // 现在的区块链是没有奖励机制的
+  // 添加区块到区块链上的规则现在不一样了
   // 添加区块到区块链上
+  // block size 是有限制的
+  minePendingTransactions(minerRewardAddress) {
+    // 矿工挖矿的时候 会把这个地址发送过来
+    // 不需要new block了，因为new block 的所有信息都记载在链上
+    let newBlock = new Block(this.transactionPool, this.getLatestBlock().hash, Date.now())
+    newBlock.mine(this.difficulty)
+    this.chain.push(newBlock)
+
+    // 发放矿工奖励
+    this.transactionPool = []
+    const minerRewardTransaction = new Transaction('', minerRewardAddress, this.minerRewardAmount)
+    console.log('矿工奖励', minerRewardTransaction)
+    this.transactionPool.push(minerRewardTransaction)
+    console.log(this.transactionPool)
+  }
+
+  addTransactionsToPool(transactions) {
+    this.transactionPool = this.transactionPool.concat(transactions)
+    console.log('added')
+    console.log(this.transactionPool)
+  }
+
   addBlockToChain(newBlock) {
     // data
     // 找到最近一个block的hash
@@ -68,6 +107,7 @@ class Chain {
     newBlock.mine(this.difficulty)
     // 这个hash 需要满足一个区块链设置的条件
     this.chain.push(newBlock)
+    // 发放矿工奖励
   }
 
   //验证这个当前的区块链是否合法
@@ -101,16 +141,15 @@ class Chain {
   }
 }
 
-const luotuoChain = new Chain();
+const t1 = new Transaction('addr1', 'addr2', 10)
+const t2 = new Transaction('addr2', 'addr3', 5)
+const transactions = [t1, t2, t1]
+// concat
 
-const block1 = new Block("转账十元", "");
-luotuoChain.addBlockToChain(block1);
-const block2 = new Block("转账十个十元", "");
-luotuoChain.addBlockToChain(block2)
-// console.log(luotuoChain.validateChain())
-
-//尝试篡改这个区块链
-luotuoChain.chain[1].data='转账一百个十元'
-luotuoChain.chain[1].mine(5)
-console.log(luotuoChain)
-console.log(luotuoChain.validateChain())
+// const block = new Block(transactions, '', Date.now())
+// block的数据其实不是从外面创建的 而是从链上获取的
+const blockChain = new Chain()
+blockChain.addTransactionsToPool(transactions)
+blockChain.minePendingTransactions('MinerAddress')
+console.log(blockChain)
+console.log(blockChain.chain[1])
