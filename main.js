@@ -6,13 +6,44 @@
 // 之前区块的哈希值
 // 自己的哈希值： 它是由存储在区块里的信息 算出来的 (data + 之前区块的哈希值)
 const sha256 = require("crypto-js/sha256");
+const ecLib = require('elliptic').ec;
+const ec = new ecLib('secp256k1') // curve name
 
+// 需要签名的是什么 是transaction
+// 签名transaction这个数据本什么，不，签名他的hash
+// 为什么要签名hash ...
+// 需要外人能够verify这个transaction
 class Transaction {
   constructor(from, to, amount) {
     this.from = from;
     this.to = to;
     this.amount = amount;
     // this.timestamp = timestamp;
+  }
+
+  computeHash(){
+    return sha256(
+        this.from +
+        this.to +
+        this.amount
+    ).toString();
+  }
+
+  // 签名需要private key
+  sign(privateKey){
+    // 验证你拥有这笔钱。privateKey和fromAddress对应的上
+    this.signature =  privateKey.sign(this.computeHash(), 'base64').toDER('hex')
+  }
+
+  isValid(){
+    // from Address 就是public key
+    // 有两种类型的 transaction 
+    if(this.from === null)
+      return true
+    if(!this.signature)
+      throw new Error('sig missing')
+    const publicKey = ec.keyFromPublic(this.from, 'hex')
+    return publicKey.verify(this.computeHash(), this.signature)
   }
 }
 
@@ -60,6 +91,16 @@ class Block {
     }
     console.log("挖矿结束", this.hash);
   }
+
+  //在block里验证这所有的transactions
+  validateTransactions(){
+    for(let transaction of this.transactions){
+      if(!transaction.isValid()){
+        return false
+      }
+      return true
+    }
+  }
 }
 
 // 区块 的 链
@@ -82,8 +123,14 @@ class Chain {
   }
 
   // 添加transaction 到 transactionPool里
-  addTransaction(transaction){
-    this.transactionPool.push(transaction)
+  // 验证transaction 的合法性
+  addTransaction(transaction) {
+    if(!transaction.from || !transaction.to)
+      throw new Error('invalid from or to')
+    if(!transaction.isValid())
+      throw new Error('invalid transaction, tampered or invalid sig')
+
+    this.transactionPool.push(transaction);
   }
 
   // 添加区块到区块链上
@@ -111,17 +158,19 @@ class Chain {
       this.transactionPool,
       this.getLatestBlock().hash
     );
-    newBlock.mine(this.difficulty)
+    newBlock.mine(this.difficulty);
 
     // 添加区块到区块链
     // 清空 transaction Pool
-    this.chain.push(newBlock)
-    this.transactionPool = []
+    this.chain.push(newBlock);
+    this.transactionPool = [];
   }
 
   //验证这个当前的区块链是否合法
   //当前的数据有没有被篡改
   //我们要验证区块的previousHash是否等于previous区块的hash
+
+  // validate all the transactions
   validateChain() {
     if (this.chain.length === 1) {
       if (this.chain[0].hash !== this.chain[0].computeHash()) {
@@ -134,6 +183,11 @@ class Chain {
     // 验证到最后一个区块 this.chain.length -1
     for (let i = 1; i <= this.chain.length - 1; i++) {
       const blockToValidate = this.chain[i];
+      // block的transactions均valid
+      if (!blockToValidate.validateTransactions()){
+        console.log('非法交易')
+        return false
+      }
       //当前的数据有没有被篡改
       if (blockToValidate.hash !== blockToValidate.computeHash()) {
         console.log("数据篡改");
@@ -151,24 +205,24 @@ class Chain {
 }
 
 const luotuoCoin = new Chain();
-const t1 = new Transaction('addr1', 'addr2', 10)
-const t2 = new Transaction('addr2', 'addr1', 5)
-luotuoCoin.addTransaction(t1)
-luotuoCoin.addTransaction(t2)
+const keyPairSender = ec.genKeyPair();
+const privateKeySender = keyPairSender.getPrivate('hex')
+const publicKeySender = keyPairSender.getPublic('hex')
+
+const keyPairReceiver = ec.genKeyPair();
+const privateKeyReceiver = keyPairReceiver.getPrivate('hex')
+const publicKeyReceiver = keyPairReceiver.getPublic('hex')
+
+const t1 = new Transaction(publicKeySender, publicKeyReceiver, 10);
+t1.sign(ec.keyFromPrivate(privateKeySender))
+console.log(t1)
+// t1.amount=20
+// const t2 = new Transaction("addr2", "addr1", 5);
+luotuoCoin.addTransaction(t1);
+// luotuoCoin.addTransaction(t2);
 
 // console.log(luotuoCoin)
-luotuoCoin.mineTransactionPool('addr3')
+luotuoCoin.mineTransactionPool("addr3");
+console.log(luotuoCoin.validateChain())
 console.log(luotuoCoin)
 console.log(luotuoCoin.chain[1])
-console.log(luotuoCoin.chain[1].transactions)
-// const block1 = new Block("转账十元", "");
-// luotuoChain.addBlockToChain(block1);
-// const block2 = new Block("转账十个十元", "");
-// luotuoChain.addBlockToChain(block2);
-// console.log(luotuoChain.validateChain())
-
-//尝试篡改这个区块链
-// luotuoChain.chain[1].data = "转账一百个十元";
-// luotuoChain.chain[1].mine(5);
-// console.log(luotuoChain);
-// console.log(luotuoChain.validateChain());
