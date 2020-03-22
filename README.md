@@ -34,15 +34,28 @@ All files      |   96.15 |    88.46 |     100 |   96.05 |
 ## 🦊 开始 Let's get started <a name = "getting_started"></a>
 祝学习愉快。
 Happy Learning.
+All the demo can be found in bilibiliDemo folder. 所有的视频里的示例都可以在bilibiliDemo的文件夹里找到
 
 ### 安装依赖(Install dependencies)
 ```
 npm install --save
-或者
 yarn
 ```
+如果作为依赖安装, it's published to npm, so if you want to install it as an dependency, please use
+```
+npm install --save luotuocoin
+or
+yarn add luotuocoin
+```
 
-### 生成一个密钥对(Generate your wallet)
+### 运行测试用例(Run tests)
+```cmd
+npm run test
+or
+yarn test
+```
+
+### 生成一个密钥对(Generate your wallet)(bilibiliDemo/encryption/keygen.js)
 密钥对讲用于发起转账，公钥（public key）会用作你的钱包地址，私钥（private key）会用来生成转账的数字签名。
 The keypair will be used for signing transactions(private key) and receving miner rewards/transactions, public key will be your wallet address.
 ```js
@@ -59,7 +72,7 @@ console.log('public', key.getPublic('hex'))
 ### 创建区块链(Create Blockchain)
 
 ```js
-const { chain, transaction } = require('./blockChain');
+const { chain, transaction } = require('luotuocoin');
 const myCoin = new chain();
 ```
 

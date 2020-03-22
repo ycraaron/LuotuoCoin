@@ -1,15 +1,16 @@
 {
-  "name": "luotuocoin",
-  "version": "1.0.0",
-  "description": "- WIP work in progress",
-  "main": "main.js",
+  "name": "luotuocoin2",
+  "version": "1.0.2",
+  "description": "A blockchain for educational purpose",
+  "main": "src/blockChain.js",
   "keywords": [
     "blockchain",
     "bitcoin"
   ],
   "dependencies": {
     "crypto-js": "^3.1.9-1",
-    "elliptic": "^6.5.2"
+    "elliptic": "^6.5.2",
+    "luotuocoin": "^1.0.2"
   },
   "devDependencies": {
     "jest": "^25.1.0"

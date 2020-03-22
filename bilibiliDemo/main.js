@@ -1,7 +1,8 @@
 const ecLib = require('elliptic').ec;
 const ec = new ecLib('secp256k1') // curve name
-const { Transaction, Chain, Block } = require("./blockChain-old");
-
+// 如果作为依赖安装，请用这种方式import
+// const { Transaction, Chain, Block } = require("luotuocoin");
+const { Transaction, Chain, Block } = require("./blockChainDemo");
 
 const luotuoCoin = new Chain(3);
 const keyPairSender = ec.genKeyPair();
