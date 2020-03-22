@@ -1,9 +1,9 @@
 const ecLib = require('elliptic').ec;
 const ec = new ecLib('secp256k1') // curve name
-const { Transaction, Chain, Block } = require("./blockChain");
+const { Transaction, Chain, Block } = require("./blockChain-old");
 
 
-const luotuoCoin = new Chain();
+const luotuoCoin = new Chain(3);
 const keyPairSender = ec.genKeyPair();
 const privateKeySender = keyPairSender.getPrivate('hex')
 const publicKeySender = keyPairSender.getPublic('hex')

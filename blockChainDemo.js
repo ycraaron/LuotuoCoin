@@ -101,11 +101,15 @@ class Block {
 // 区块 的 链
 // 生成祖先区块
 class Chain {
-  constructor() {
+  constructor(difficulty) {
     this.chain = [this.bigBang()];
     this.transactionPool = [];
     this.minerReward = 50;
-    this.difficulty = 4;
+    this.difficulty = difficulty;
+  }
+
+  setDifficulty(difficulty) {
+    this.difficulty = difficulty
   }
 
   bigBang() {
@@ -119,7 +123,9 @@ class Chain {
 
   // 添加transaction 到 transactionPool里
   // 验证transaction 的合法性
+  // 暴露给外部的方法不应该允许添加空地址的transaction
   addTransaction(transaction) {
+    console.log(transaction)
     if(!transaction.from || !transaction.to)
       throw new Error('invalid from or to')
     if(!transaction.isValid())
@@ -142,7 +148,7 @@ class Chain {
   mineTransactionPool(minerRewardAddress) {
     // 发放矿工奖励
     const minerRewardTransaction = new Transaction(
-      "",
+      null,
       minerRewardAddress,
       this.minerReward
     );
