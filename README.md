@@ -17,6 +17,12 @@
 
 *⚠️ 本项目仅作为了解区块链及区块链入门教学使用 For educational purpose only*
 
+## Coverage (Jest)
+File           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------|---------|----------|---------|---------|-------------------
+All files      |   96.15 |    88.46 |     100 |   96.05 |                   
+ blockChain.js |   96.15 |    88.46 |     100 |   96.05 | 76,133,168        
+
 ## 功能(Features)
 
 * 工作量证明机制(Proof of Work, PoF)的简单实现, A simple implementation of the Proof of Work algorithm.
