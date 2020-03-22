@@ -15,7 +15,7 @@
 
 ---
 
-*⚠️ 本项目仅作为了解区块链及区块链入门教学使用*
+*⚠️ 本项目仅作为了解区块链及区块链入门教学使用 For educational purpose only*
 
 ## 功能(Features)
 
@@ -23,6 +23,7 @@
 * 区块链的验证, Block chain validation to prevent it from being maliciously tampered.
 * Transaction的签名. Sign transactions.
 * 钱包地址生成. Wallet generation.
+* 挖矿. Mining
 
 ## 🦊 开始 Let's get started <a name = "getting_started"></a>
 祝学习愉快。
@@ -85,4 +86,4 @@ myCoin.mineTransactionPool(key.getPublic('hex'));
 | 视频3-1: 数字货币是怎么产生的 | 视频3-2: 把区块链变成数字货币 |
 [![](https://i2.hdslb.com/bfs/archive/e2810bd35fd43d5e6285703a9ac92893ab67cb5c.jpg@380w_240h_100Q_1c.webp)](https://www.bilibili.com/video/av87698079) | [![](https://i0.hdslb.com/bfs/archive/b74ad2337cfd2042bc8bf3c8d8f9cf8f2972b897.jpg@380w_240h_100Q_1c.webp)](https://www.bilibili.com/video/av88477333)
 | 视频4-1: 比特币中的数字签名是什么 | 视频4-2: 向区块链中添加数字签名 |
-[![](https://i2.hdslb.com/bfs/archive/90c6b534c8334136f0f21407861d1e3faaf86cb4.jpg_320x200.jpg)](https://www.bilibili.com/video/av97462177/) | [![](https://gamepedia.cursecdn.com/overwatch_gamepedia/3/3b/WIPLogo.png?version=7e13c48b1154f692dbb30016db96c21e)](404)
+[![](https://i2.hdslb.com/bfs/archive/90c6b534c8334136f0f21407861d1e3faaf86cb4.jpg_320x200.jpg)](https://www.bilibili.com/video/av97462177/) | [![](https://i0.hdslb.com/bfs/archive/114e8bc5d21bced334a4d0662544a6c9974d4903.jpg_320x200.jpg?version=7e13c48b1154f692dbb30016db96c21e)](https://www.bilibili.com/video/av98365204/)
