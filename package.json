@@ -1,6 +1,6 @@
 {
-  "name": "luotuocoin2",
-  "version": "1.0.2",
+  "name": "luotuocoin",
+  "version": "1.0.3",
   "description": "A blockchain for educational purpose",
   "main": "src/blockChain.js",
   "keywords": [
