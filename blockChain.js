@@ -72,6 +72,9 @@ class Block {
   //计算复合区块链难度要求的hash
   // 什么是 复合区块链难度要求的hash
   mine(difficulty) {
+    if(!this.validateTransactions()){
+      throw new Error('tampered transactions found, abort, 发现异常交易，停止挖矿')
+    }
     while (true) {
       this.hash = this.computeHash();
       if (this.hash.substring(0, difficulty) !== this.getAnswer(difficulty)) {
