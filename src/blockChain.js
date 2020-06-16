@@ -94,8 +94,8 @@ class Block {
         console.log('非法交易')
         return false
       }
-      return true
     }
+    return true
   }
 }
 
