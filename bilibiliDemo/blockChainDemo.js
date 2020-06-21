@@ -93,8 +93,8 @@ class Block {
       if(!transaction.isValid()){
         return false
       }
-      return true
     }
+    return true
   }
 }
 
