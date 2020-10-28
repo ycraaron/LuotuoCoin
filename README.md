@@ -28,7 +28,7 @@ _⚠️ 本项目仅作为了解区块链及区块链入门教学使用 For educ
 
 ## 功能(Features)
 
-- 工作量证明机制(Proof of Work, PoF)的简单实现, A simple implementation of the Proof of Work algorithm.
+- 工作量证明机制(Proof of Work, PoW)的简单实现, A simple implementation of the Proof of Work algorithm.
 - 区块链的验证, Block chain validation to prevent it from being maliciously tampered.
 - Transaction 的签名. Sign transactions.
 - 钱包地址生成. Wallet generation.
